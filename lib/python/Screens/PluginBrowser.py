@@ -50,14 +50,15 @@ class PluginBrowser(Screen, ProtectedScreen):
         self.setTitle(_('Plugin browser'))
         ProtectedScreen.__init__(self)
         self.firsttime = True
-        self['key_red'] = self['red'] = Label(_('Manage extensions'))
+        self['key_red'] = self['red'] = Label(_('Download')) # for Manager Extension
         self.list = []
         self['list'] = PluginList(self.list)
         self['actions'] = ActionMap(['WizardActions', 'MenuActions'], {'ok': self.save,
          'back': self.close,
          'menu': self.exit})
-        self['SoftwareActions'] = ActionMap(['ColorActions'], {'red': self.openExtensionmanager})
-        self['SoftwareActions'].setEnabled(True)
+        self['Download'] = ActionMap(['ColorActions'], {'red': self.download})
+        #self['SoftwareActions'] = ActionMap(['ColorActions'], {'red': self.openExtensionmanager}) # for Manager Extension
+        #self['SoftwareActions'].setEnabled(True) # for Manager Extension
         self['DirectionActions'] = ActionMap(['DirectionActions'], {'moveUp': self.moveUp,
          'moveDown': self.moveDown})
         self['NumberActions'] = NumberActionMap(['NumberActions'], {'1': self.keyNumberGlobal,
