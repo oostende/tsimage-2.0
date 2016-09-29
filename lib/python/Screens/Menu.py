@@ -369,10 +369,18 @@ class Menu(Screen, ProtectedScreen):
                 self.list.append(entry)
 
         if not self.list:
-            self.list.append(('', None, 'dummy', '10', 10))
-        self.list.sort(key=lambda listweight: int(4))
-
-
+            self.list.append(('', None, 'dummy', '10', 10,None,10))
+        newlist=[]    
+        for item in self.list:
+                if 'Factory reset' in item:
+                    #item=list(item)
+                    item=(item[0],item[1],item[2],item[3],item[3],"None","50")
+                    
+                newlist.append(item)
+       
+        self.list=newlist
+        self.list.sort(key=lambda listweight: int(listweight[6]))
+       
 class MenuSort(Menu):
 
     def __init__(self, session, parent):
@@ -402,9 +410,19 @@ class MenuSort(Menu):
 
     def hide_show_entries(self):
         self.list = list(self.full_list)
+        
         if not self.list:
-            self.list.append(('', None, 'dummy', '10', 10))
-        self.list.sort(key=lambda listweight: int(4))
+            self.list.append(('', None, 'dummy', '10', 10,None,10))
+        newlist=[]
+        for item in self.list:
+                if 'Factory reset' in item:
+                    #item=list(item)
+                    item=(item[0],item[1],item[2],item[3],item[3],"None","50")
+                    
+                newlist.append(item)
+        self.list=newlist
+        self.list.sort(key=lambda listweight: int(listweight[6]))
+        
 
     def selectionChanged(self):
         selection = self['menu'].getCurrent()[2]
