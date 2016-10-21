@@ -333,12 +333,12 @@ class PluginDownloadBrowser(Screen):
         self.listWidth = listsize.width()
         self.listHeight = listsize.height()
         if self.type == self.DOWNLOAD:
-            if self.needupdate and not PluginDownloadBrowser.lastDownloadDate or time() - PluginDownloadBrowser.lastDownloadDate > 3600:
+            #if self.needupdate and not PluginDownloadBrowser.lastDownloadDate or time() - PluginDownloadBrowser.lastDownloadDate > 3600:
                 self.container.execute(self.ipkg + ' update')
                 PluginDownloadBrowser.lastDownloadDate = time()
-            else:
-                self.run = 1
-                self.startIpkgListInstalled()
+            #else:
+            #    self.run = 1
+            #    self.startIpkgListInstalled()
         elif self.type == self.REMOVE:
             self.run = 1
             self.startIpkgListInstalled()
