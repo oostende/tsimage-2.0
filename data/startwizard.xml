@@ -283,11 +283,11 @@ config.ParentalControl.configured.save()
 				<listentry caption="Yes" step="finishparentalsetup" />
 				<listentry caption="No" step="warnpin" />
 			</list>
-			<code pos="after">
+			<!--code pos="after">
 from ParentalControlSetup import ParentalControlChangePin
 if self["list"].index == 0:
 	self.session.open(ParentalControlChangePin, config.ParentalControl.servicepin[0], _("parental control pin"))
-			</code>
+			</code-->
 		</step>
 		<step id="warnpin">
 			<text value="Please be aware, that anyone can disable the parental control, if you have not set a PIN." />
