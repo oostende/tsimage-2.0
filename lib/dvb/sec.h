@@ -380,6 +380,9 @@ public:
 	bool isRotorMoving();
 	bool canMeasureInputPower() { return m_canMeasureInputPower; }
 	int getTargetOrbitalPosition() { return m_target_orbital_position; }
+	
+	PyObject *getBandCutOffFrequency(int slot_no, int orbital_position);
+	PyObject *getFrequencyRangeList(int slot_no, int orbital_position);
 
 	friend class eFBCTunerManager;
 };
