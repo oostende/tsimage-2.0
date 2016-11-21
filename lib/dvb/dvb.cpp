@@ -22,6 +22,10 @@
 #define MIN(a,b) (a < b ? a : b)
 #define MAX(a,b) (a > b ? a : b)
 
+#ifndef DTV_ENUM_DELSYS
+#define DTV_ENUM_DELSYS 44
+#endif
+
 DEFINE_REF(eDVBRegisteredFrontend);
 DEFINE_REF(eDVBRegisteredDemux);
 
@@ -744,7 +748,7 @@ bool eDVBResourceManager::frontendIsCompatible(int index, const char *type)
 			}
 			else if (!strcmp(type, "DVB-C"))
 			{
-#if defined SYS_DVBC_ANNEX_A
+#if DVB_API_VERSION > 5 || DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR >= 6
 				return i->m_frontend->supportsDeliverySystem(SYS_DVBC_ANNEX_A, false) || i->m_frontend->supportsDeliverySystem(SYS_DVBC_ANNEX_C, false);
 #else
 				return i->m_frontend->supportsDeliverySystem(SYS_DVBC_ANNEX_AC, false);
@@ -803,7 +807,7 @@ void eDVBResourceManager::setFrontendType(int index, const char *type)
 			}
 			else if (!strcmp(type, "DVB-C"))
 			{
-#if defined SYS_DVBC_ANNEX_A
+#if DVB_API_VERSION > 5 || DVB_API_VERSION == 5 && DVB_API_VERSION_MINOR >= 6
 				whitelist.push_back(SYS_DVBC_ANNEX_A);
 				whitelist.push_back(SYS_DVBC_ANNEX_C);
 #else
