@@ -43,7 +43,6 @@ eDVBAudio::eDVBAudio(eDVBDemux *demux, int dev)
 	{
 		m_fd_demux = -1;
 	}
-
 #ifndef DREAMBOX
 	if (m_fd >= 0)
 	{
@@ -271,7 +270,6 @@ eDVBVideo::eDVBVideo(eDVBDemux *demux, int dev)
 	{
 		m_fd_demux = -1;
 	}
-
 #ifndef DREAMBOX
 	if (m_fd >= 0)
 	{
