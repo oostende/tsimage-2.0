@@ -1909,7 +1909,7 @@ def UpgradeMain(session, **kwargs):
 	session.open(UpdatePluginMenu)
 
 def startSetup(menuid):
-	if menuid == "setup" and config.plugins.softwaremanager.onSetupMenu.value:
+	if menuid == "setup":
 		return [(_("Software management"), UpgradeMain, "software_manager", 50)]
 	return [ ]
 
