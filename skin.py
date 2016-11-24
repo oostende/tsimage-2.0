@@ -669,7 +669,8 @@ def loadSkin(name, scope = SCOPE_SKIN):
 	filename = resolveFilename(scope, name)
 	if fileExists(filename):
 		path = os.path.dirname(filename) + "/"
-		for elem in xml.etree.cElementTree.parse(filename).getroot():
+		file = open(filename, 'r')
+		for elem in xml.etree.cElementTree.parse(file).getroot():
 			if elem.tag == 'screen':
 				name = elem.attrib.get('name', None)
 				if name:
@@ -679,14 +680,13 @@ def loadSkin(name, scope = SCOPE_SKIN):
 						elem.clear()
 						continue
 					if name in dom_screens:
-						print "loadSkin: Screen already defined elsewhere:", name
-						elem.clear()
-					else:
-						dom_screens[name] = (elem, path)
+						dom_screens[name][0].clear()
+                                        dom_screens[name] = (elem, path)
 				else:
 					elem.clear()
 			else:
 				elem.clear()
+                        file.close()
 
 def loadSkinData(desktop):
 	# Kinda hackish, but this is called once by mytest.py
