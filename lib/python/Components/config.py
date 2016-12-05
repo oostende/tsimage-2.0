@@ -316,12 +316,12 @@ class ConfigSelection(ConfigElement):
 
     def getText(self):
         if self._descr is None:
- 			self._descr = self.description[self.value]
+ 		self._descr = self.description[self.value]
   		return self._descr
 
     def getMulti(self, selected):
         if self._descr is None:
-			self._descr = self.description[self.value]
+		self._descr = self.description[self.value]
  		return ("text", self._descr)
 
     def getHTML(self, id):
