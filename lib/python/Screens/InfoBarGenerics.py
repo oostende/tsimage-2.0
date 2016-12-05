@@ -41,6 +41,8 @@ from bisect import insort
 from sys import maxint
 from RecordTimer import RecordTimerEntry, RecordTimer, findSafeRecordPath
 from Menu import MainMenu, mdom
+from Components.config import ConfigInteger
+from os import stat as os_stat, remove as os_remove
 
 def isStandardInfoBar(self):
     return self.__class__.__name__ == 'InfoBar'
@@ -2453,53 +2455,56 @@ class InfoBarInstantRecord():
         return timers > identical
 
     def instantRecord(self, serviceRef = None):
-		self.SelectedInstantServiceRef = serviceRef
-		pirr = preferredInstantRecordPath()
-		if not findSafeRecordPath(pirr) and not findSafeRecordPath(defaultMoviePath()):
-		    if not pirr:
-                        pirr = ""
-		    self.session.open(MessageBox, _("Missing ") + "\n" + pirr + "\n" + _("No HDD found or HDD not initialized!"), MessageBox.TYPE_ERROR)
-		    return
+        self.SelectedInstantServiceRef = serviceRef
+        dir = preferredInstantRecordPath()
+        if not dir or not fileExists(dir, 'w'):
+            dir = defaultMoviePath()
 
-		if isStandardInfoBar(self):
-			common = ((_("Add recording (stop after current event)"), "event"),
-				(_("Add recording (indefinitely)"), "indefinitely"),
-				(_("Add recording (enter recording duration)"), "manualduration"),
-				(_("Add recording (enter recording endtime)"), "manualendtime"),)
-		else:
-			common = ()
-		if self.isInstantRecordRunning():
-			title =_("A recording is currently running.\nWhat do you want to do?")
-			list = common + \
-				((_("Change recording (duration)"), "changeduration"),
-				(_("Change recording (add time)"), "addrecordingtime"),
-				(_("Change recording (endtime)"), "changeendtime"),)
-			list += ((_("Stop recording"), "stop"),)
-			if config.usage.movielist_trashcan.value:
-				list += ((_("Stop and delete recording"), "stopdelete"),)
-			if len(self.recording) > 1:
-				list += ((_("Stop all current recordings"), "stopall"),)
-				if config.usage.movielist_trashcan.value:
-					list += ((_("Stop and delete all current recordings"), "stopdeleteall"),)
-			if self.isTimerRecordRunning():
-				list += ((_("Stop timer recording"), "timer"),)
-			list += ((_("Do nothing"), "no"),)
-		else:
-			title=_("Start recording?")
-			list = common
-			if self.isTimerRecordRunning():
-				list += ((_("Stop timer recording"), "timer"),)
-			if isStandardInfoBar(self):
-				list += ((_("Do not record"), "no"),)
-		if isStandardInfoBar(self) and self.timeshiftEnabled():
-			list = list + ((_("Save timeshift file"), "timeshift"),
-				(_("Save timeshift file in movie directory"), "timeshift_movie"))
-			if self.currentEventTime() > 0:
-				list += ((_("Save timeshift only for current event"), "timeshift_event"),)
-		if list:
-			self.session.openWithCallback(self.recordQuestionCallback, ChoiceBox, title=title, list=list)
-		else:
-			return 0
+        if not fileExists("/hdd", 0):
+		print "not found /hdd"
+		system("ln -s /media/hdd /hdd")
+#
+	try:
+		stat = os_stat(dir)
+	except:
+            self.session.open(MessageBox, _('Missing ') + '\n' + dir + '\n' + _('No HDD found or HDD not initialized!'), MessageBox.TYPE_ERROR)
+            return
+
+        if isStandardInfoBar(self):
+            common = ((_('Add recording (stop after current event)'), 'event'),
+             (_('Add recording (indefinitely)'), 'indefinitely'),
+             (_('Add recording (enter recording duration)'), 'manualduration'),
+             (_('Add recording (enter recording endtime)'), 'manualendtime'))
+        else:
+            common = ()
+        if self.isInstantRecordRunning():
+            title = _('A recording is currently running.\nWhat do you want to do?')
+            list = common + ((_('Change recording (duration)'), 'changeduration'), (_('Change recording (add time)'), 'addrecordingtime'), (_('Change recording (endtime)'), 'changeendtime'))
+            list += ((_('Stop recording'), 'stop'),)
+            if config.usage.movielist_trashcan.value:
+                list += ((_('Stop and delete recording'), 'stopdelete'),)
+            if len(self.recording) > 1:
+                list += ((_('Stop all current recordings'), 'stopall'),)
+                if config.usage.movielist_trashcan.value:
+                    list += ((_('Stop and delete all current recordings'), 'stopdeleteall'),)
+            if self.isTimerRecordRunning():
+                list += ((_('Stop timer recording'), 'timer'),)
+            list += ((_('Do nothing'), 'no'),)
+        else:
+            title = _('Start recording?')
+            list = common
+            if self.isTimerRecordRunning():
+                list += ((_('Stop timer recording'), 'timer'),)
+            if isStandardInfoBar(self):
+                list += ((_('Do not record'), 'no'),)
+        if isStandardInfoBar(self) and self.timeshiftEnabled():
+            list = list + ((_('Save timeshift file'), 'timeshift'), (_('Save timeshift file in movie directory'), 'timeshift_movie'))
+            if self.currentEventTime() > 0:
+                list += ((_('Save timeshift only for current event'), 'timeshift_event'),)
+        if list:
+            self.session.openWithCallback(self.recordQuestionCallback, ChoiceBox, title=title, list=list)
+        else:
+            return 0
 
 
 from Tools.ISO639 import LanguageCodes
