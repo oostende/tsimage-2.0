@@ -315,14 +315,23 @@ class ConfigSelection(ConfigElement):
         self.value = self.choices[(i + 1) % nchoices]
 
     def getText(self):
-        if self._descr is None:
- 		self._descr = self.description[self.value]
-  		return self._descr
+        if self._descr is not None:
+            return self._descr
+        else:
+            descr = self._descr = self.description[self.value]
+            if descr:
+                return _(descr)
+            return descr
 
     def getMulti(self, selected):
-        if self._descr is None:
-		self._descr = self.description[self.value]
- 		return ("text", self._descr)
+        if self._descr is not None:
+            descr = self._descr
+        else:
+            descr = self._descr = self.description[self.value]
+        if descr:
+            return ('text', _(descr))
+        else:
+            return ('text', descr)
 
     def getHTML(self, id):
         res = ''
@@ -341,9 +350,13 @@ class ConfigSelection(ConfigElement):
 
     description = property(lambda self: descriptionList(self.choices.choices, self.choices.type))
 
+
+boolean_descriptions = {False: _('false'),
+ True: _('true')}
+
 class ConfigBoolean(ConfigElement):
 
-    def __init__(self, default = False, descriptions = {False: _("false"), True: _("true")}):
+    def __init__(self, default = False, descriptions = boolean_descriptions):
         ConfigElement.__init__(self)
         self.descriptions = descriptions
         self.value = self.last_value = self.default = default
@@ -357,10 +370,16 @@ class ConfigBoolean(ConfigElement):
             self.value = True
 
     def getText(self):
-        return self.descriptions[self.value]
+        descr = self.descriptions[self.value]
+        if descr:
+            return _(descr)
+        return descr
 
     def getMulti(self, selected):
-        return ("text", self.descriptions[self.value])
+        descr = self.descriptions[self.value]
+        if descr:
+            return ('text', _(descr))
+        return ('text', descr)
 
     def tostring(self, value):
         if not value:
@@ -392,20 +411,32 @@ class ConfigBoolean(ConfigElement):
             self.changedFinal()
             self.last_value = self.value
 
+
+yes_no_descriptions = {False: _('no'),
+ True: _('yes')}
+
 class ConfigYesNo(ConfigBoolean):
 
     def __init__(self, default = False):
-        ConfigBoolean.__init__(self, default = default, descriptions = {False: _("no"), True: _("yes")})
+        ConfigBoolean.__init__(self, default=default, descriptions=yes_no_descriptions)
+
+
+on_off_descriptions = {False: _('off'),
+ True: _('on')}
 
 class ConfigOnOff(ConfigBoolean):
 
     def __init__(self, default = False):
-        ConfigBoolean.__init__(self, default = default, descriptions = {False: _("off"), True: _("on")})
+        ConfigBoolean.__init__(self, default=default, descriptions=on_off_descriptions)
+
+
+enable_disable_descriptions = {False: _('disable'),
+ True: _('enable')}
 
 class ConfigEnableDisable(ConfigBoolean):
 
     def __init__(self, default = False):
-        ConfigBoolean.__init__(self, default = default, descriptions = {False: _("disable"), True: _("enable")})
+        ConfigBoolean.__init__(self, default=default, descriptions=enable_disable_descriptions)
 
 
 class ConfigDateTime(ConfigElement):
