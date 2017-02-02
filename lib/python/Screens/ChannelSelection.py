@@ -1797,7 +1797,7 @@ class ChannelSelectionBase(Screen):
                 if info and playingref:
                     provider = info.getInfoString(iServiceInformation.sProvider)
                     op = int(playingref.toString().split(':')[6][:-4] or "0",16)
- 					refstr = '1:7:0:0:0:0:0:0:0:0:(provider == \"%s\") && (satellitePosition == %s) && %s ORDER BY name:%s' % (provider, op, self.service_types[self.service_types.rfind(':')+1:], provider)
+ 		    refstr = '1:7:0:0:0:0:0:0:0:0:(provider == \"%s\") && (satellitePosition == %s) && %s ORDER BY name:%s' % (provider, op, self.service_types[self.service_types.rfind(':')+1:], provider)
                     self.setCurrentSelection(eServiceReference(refstr))
         elif not self.isBasePathEqual(self.bouquet_root) or self.bouquet_mark_edit == EDIT_ALTERNATIVES:
             if playingref:
