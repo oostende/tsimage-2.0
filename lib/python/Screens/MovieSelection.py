@@ -172,29 +172,15 @@ def moveServiceFiles(serviceref, dest, name=None, allowCopy=True):
 	# Try to "atomically" move these files
 	movedList = []
 	try:
-		try:
-			for item in moveList:
-				os.rename(item[0], item[1])
-				movedList.append(item)
-		except OSError, e:
-			if e.errno == 18 and allowCopy:
-				print "[MovieSelection] cannot rename across devices, trying slow move"
-				import CopyFiles
-				# start with the smaller files, do the big one later.
-				moveList.reverse()
-				if name is None:
-					name = os.path.split(moveList[-1][0])[1]
-				CopyFiles.moveFiles(moveList, name)
-				print "[MovieSelection] Moving in background..."
-			else:
-				raise
+		# print "[MovieSelection] Moving in background..."
+		# start with the smaller files, do the big one later.
+                import CopyFiles
+		moveList.reverse()
+		if name is None:
+			name = os.path.split(moveList[-1][0])[1]
+		CopyFiles.moveFiles(moveList, name)
 	except Exception, e:
 		print "[MovieSelection] Failed move:", e
-		for item in movedList:
-			try:
-				os.rename(item[1], item[0])
-			except:
-				print "[MovieSelection] Failed to undo move:", item
 		# rethrow exception
 		raise
 
