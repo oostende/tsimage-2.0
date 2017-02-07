@@ -93,7 +93,7 @@ struct gRGB
 	}
 	operator const std::string () const
 	{
-		void operator=(unsigned int val)
+		unsigned int val = value;
 		std::string escapecolor = "\\c";
 		escapecolor.resize(10);
 		for (int i = 9; i >= 2; i--)
