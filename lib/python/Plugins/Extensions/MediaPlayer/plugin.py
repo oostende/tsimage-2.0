@@ -254,7 +254,7 @@ class MediaPlayer(Screen, InfoBarBase, InfoBarScreenSaver, InfoBarSeek, InfoBarA
 				iPlayableService.evUser+13: self["coverArt"].embeddedCoverArt
 			})
 		
-	self.servicelist = None
+		self.servicelist = None
  		self.pipZapAvailable = False
  		if InfoBar.instance is not None:
  			self.servicelist = InfoBar.instance.servicelist
@@ -274,7 +274,7 @@ class MediaPlayer(Screen, InfoBarBase, InfoBarScreenSaver, InfoBarSeek, InfoBarA
  		else:
  			value = _("Switch between filelist/playlist")
  		return value
-
+ 
 	def hideAndInfoBar(self):
 		self.hide()
 		self.mediaPlayerInfoBar.show()
@@ -1026,27 +1026,27 @@ class MediaPlayer(Screen, InfoBarBase, InfoBarScreenSaver, InfoBarSeek, InfoBarA
  			self.session.execDialog(self.servicelist)
  
  	def activatePiP(self):
- 		if self.pipZapAvailable:
- 			if InfoBar.instance is not None:
- 				modeslist = [ ]
- 				keyslist = [ ]
- 				if InfoBar.pipShown(InfoBar.instance):
- 					slist = self.servicelist
- 					if slist:
- 						if slist.dopipzap:
- 							modeslist.append((_("Zap focus to main screen"), "pipzap"))
- 						else:
- 							modeslist.append((_("Zap focus to Picture in Picture"), "pipzap"))
- 						keyslist.append('red')
- 					modeslist.append((_("Move Picture in Picture"), "move"))
- 					keyslist.append('green')
- 					modeslist.append((_("Disable Picture in Picture"), "stop"))
- 					keyslist.append('blue')
- 				else:
- 					modeslist.append((_("Activate Picture in Picture"), "start"))
- 					keyslist.append('blue')
- 				dlg = self.session.openWithCallback(self.pipAnswerConfirmed, ChoiceBox, list = modeslist, keys = keyslist)
- 				dlg.setTitle(_("Menu")  " PiP")
+		if self.pipZapAvailable:
+			if InfoBar.instance is not None:
+				modeslist = [ ]
+				keyslist = [ ]
+				if InfoBar.pipShown(InfoBar.instance):
+					slist = self.servicelist
+					if slist:
+						if slist.dopipzap:
+							modeslist.append((_("Zap focus to main screen"), "pipzap"))
+						else:
+							modeslist.append((_("Zap focus to Picture in Picture"), "pipzap"))
+						keyslist.append('red')
+					modeslist.append((_("Move Picture in Picture"), "move"))
+					keyslist.append('green')
+					modeslist.append((_("Disable Picture in Picture"), "stop"))
+					keyslist.append('blue')
+				else:
+					modeslist.append((_("Activate Picture in Picture"), "start"))
+					keyslist.append('blue')
+				dlg = self.session.openWithCallback(self.pipAnswerConfirmed, ChoiceBox, list = modeslist, keys = keyslist)
+				dlg.setTitle(_("Menu") + " PiP")
  
  	def pipAnswerConfirmed(self, answer):
  		answer = answer and answer[1]
