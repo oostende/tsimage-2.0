@@ -29,7 +29,6 @@
 #include <lib/python/connections.h>
 #include <lib/python/python.h>
 #include <lib/python/pythonconfig.h>
-#include <lib/service/servicepeer.h>
 
 #include "bsod.h"
 #include "version_info.h"
@@ -112,7 +111,6 @@ class eMain: public eApplication, public Object
 public:
 	eMain()
 	{
- 		init_servicepeer();
 		init.setRunlevel(eAutoInitNumbers::main);
 		/* TODO: put into init */
 		m_dvbdb = new eDVBDB();
@@ -126,7 +124,6 @@ public:
 	{
 		m_dvbdb->saveServicelist();
 		m_mgr->releaseCachedChannel();
-		done_servicepeer();
 	}
 };
 
