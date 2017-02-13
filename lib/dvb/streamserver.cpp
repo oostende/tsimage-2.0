@@ -12,7 +12,6 @@
 #include <lib/base/wrappers.h>
 #include <lib/base/nconfig.h>
 #include <lib/base/cfile.h>
-#include <lib/base/e2avahi.h>
 
 #include <lib/dvb/streamserver.h>
 #include <lib/dvb/encoder.h>
@@ -242,7 +241,6 @@ eStreamServer::eStreamServer()
  : eServerSocket(8001, eApp)
 {
 	m_instance = this;
-	e2avahi_announce(NULL, "_e2stream._tcp", 8001);
 }
 
 eStreamServer::~eStreamServer()
