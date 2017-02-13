@@ -176,7 +176,6 @@ public:
  	int getRequested() const { return requested; }
 	void setRequested(int req) { requested=req; }
 
-	eSmartPtrList<iObject> m_clients;
 };
 
 #endif
