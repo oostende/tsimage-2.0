@@ -421,9 +421,6 @@ std::string Big5ToUTF8(const char *szIn, int len, int *pconvertedLen)
 			szOut[t++] = szIn[i];
 	}
 
-        if (i < len && szIn[i] && ((unsigned char)szIn[i] < 0xA0 || (unsigned char)szIn[i] > 0xF9))
-		szOut[t++] = szIn[i++];
-
 	if (pconvertedLen)
 		*pconvertedLen = i;
 	return std::string(szOut, t);
