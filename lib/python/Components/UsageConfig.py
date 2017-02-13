@@ -578,6 +578,13 @@ def InitUsageConfig():
              '422': _('422'),
              '444': _('444')})
         config.av.hdmicolorspace.addNotifier(setHaveColorspace)
+
+    if SystemInfo["HasHDMIpreemphasis"]:
+		def setHDMIpreemphasis(configElement):
+			open(SystemInfo["HasHDMIpreemphasis"], "w").write(configElement.value)
+		config.av.hdmipreemphasis = ConfigSelection(default = "off", choices = [ ("on", _("Yes")), ("off", _("No"))] )
+		config.av.hdmipreemphasis.addNotifier(setHDMIpreemphasis)
+
     config.subtitles = ConfigSubsection()
     config.subtitles.ttx_subtitle_colors = ConfigSelection(default='1', choices=[('0', _('original')), ('1', _('white')), ('2', _('yellow'))])
     config.subtitles.ttx_subtitle_original_position = ConfigYesNo(default=False)
