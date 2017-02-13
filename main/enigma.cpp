@@ -9,6 +9,7 @@
 #include <lib/actions/action.h>
 #include <lib/driver/rc.h>
 #include <lib/base/ioprio.h>
+#include <lib/base/e2avahi.h>
 #include <lib/base/ebase.h>
 #include <lib/base/eenv.h>
 #include <lib/base/eerror.h>
