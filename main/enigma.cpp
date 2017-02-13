@@ -199,8 +199,8 @@ int main(int argc, char **argv)
 	if (debugLvl < 0)
 		debugLvl = 0;
 	printf("ENIGMA_DEBUG_LVL=%d\n", debugLvl);
- 	if (getenv("ENIGMA_DEBUG_TIME"))
- 		setDebugTime(atoi(getenv("ENIGMA_DEBUG_TIME")) != 0);
+	if (getenv("ENIGMA_DEBUG_TIME"))
+		setDebugTime(atoi(getenv("ENIGMA_DEBUG_TIME")) != 0);
 
 	ePython python;
 	eMain main;
