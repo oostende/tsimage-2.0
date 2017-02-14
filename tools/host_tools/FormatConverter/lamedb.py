@@ -61,11 +61,7 @@ class lamedb(datasource):
 				tsid = transpondertuple[1]
 				onid = transpondertuple[2]
 				print transponder, tsid, onid
-				tmp_transponder = {}
-				tmp_transponder["frequency"] = transponder[0]
-				tmp_transponder["symbol_rate"] = transponder[1]
-				tmp_transponder["polarization"] = transponder[2]
-				tmp_transponder["fec"] = transponder[3]
+				tmp_transponder = {"frequency": transponder[0], "symbol_rate": transponder[1], "polarization": transponder[2], "fec": transponder[3]}
 				if version == 3:
 					if len(transponder) > 6:
 						tmp_transponder["system"] = transponder[6]
