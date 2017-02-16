@@ -28,6 +28,7 @@ LD_PRELOAD=$LIBS @bindir@/enigma2
 # 1 - halt
 # 2 - reboot
 # 3 - restart enigma
+# 4- ENIGMA_DEBUG_LVL=3 enigma2.sh
 #
 # >128 signal
 
