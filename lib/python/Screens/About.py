@@ -17,7 +17,6 @@ from enigma import eTimer, eLabel, eConsoleAppContainer
 from Components.HTMLComponent import HTMLComponent
 from Components.GUIComponent import GUIComponent
 import skin
-import os
 
 class About(Screen):
 	def __init__(self, session):
@@ -52,7 +51,7 @@ class About(Screen):
 		if fp_version is None:
 			fp_version = ""
 		else:
-			fp_version = _("Frontprocessor version: %d") % fp_version
+			fp_version = _("Frontprocessor version: %s") % fp_version
 			AboutText += fp_version + "\n"
 
 		self["FPVersion"] = StaticText(fp_version)
@@ -116,9 +115,9 @@ class About(Screen):
 
 	def showMemoryInfo(self):
 		self.session.open(MemoryInfo)
-		
+
 	def showTroubleshoot(self):
- 		self.session.open(Troubleshoot)
+		self.session.open(Troubleshoot)
 
 class TranslationInfo(Screen):
 	def __init__(self, session):
@@ -347,9 +346,8 @@ class Troubleshoot(Screen):
 		self.container.appClosed.append(self.appClosed)
 		self.container.dataAvail.append(self.dataAvail)
 		self.titles = ["dmesg", "ifconfig", "df", "top"]
- 		self.commands = ["dmesg | tail -n 479", "ifconfig", "df", "top -n 1"]
- 		self.getLogfiles()
-
+		self.commands = ["dmesg | tail -n 479", "ifconfig", "df", "top -n 1"]
+		self.getLogfiles()
 		self.commandIndex = 0
 		self.onLayoutFinish.append(self.run_console)
 
@@ -389,22 +387,22 @@ class Troubleshoot(Screen):
 		self.container.dataAvail.remove(self.dataAvail)
 		self.container = None
 		self.close()
-		
+
 	def getLogfiles(self):
- 		import os
- 		path = "/mnt/hdd/"
- 		if os.path.isdir(path):
- 			mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
- 			fileNames = [x for x in sorted(os.listdir(path), key=mtime) if x.endswith(".log")]
- 			totalNumberOfLogfiles = len(fileNames)
- 			logfileCounter = 1
- 			for fileName in reversed(fileNames):
- 				self.titles.append("logfile %s (%s/%s)" % (fileName, logfileCounter, totalNumberOfLogfiles))
- 				self.commands.append("cat %s%s" % (path, fileName))
- 				logfileCounter += 1
- 		else:
- 			path = "/home/root/"
- 			fileName = "enigma2_crash.log"
- 			if os.path.exists(path + fileName):
- 				self.titles.append("logfile %s" % fileName)
- 				self.commands.append("cat %s%s" % (path, fileName))
+		import os
+		path = "/mnt/hdd/"
+		if os.path.isdir(path):
+			mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
+			fileNames = [x for x in sorted(os.listdir(path), key=mtime) if x.endswith(".log")]
+			totalNumberOfLogfiles = len(fileNames)
+			logfileCounter = 1
+			for fileName in reversed(fileNames):
+				self.titles.append("logfile %s (%s/%s)" % (fileName, logfileCounter, totalNumberOfLogfiles))
+				self.commands.append("cat %s%s" % (path, fileName))
+				logfileCounter += 1
+		else:
+			path = "/home/root/"
+			fileName = "enigma2_crash.log"
+			if os.path.exists(path + fileName):
+				self.titles.append("logfile %s" % fileName)
+				self.commands.append("cat %s%s" % (path, fileName))
