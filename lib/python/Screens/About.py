@@ -178,7 +178,7 @@ class CommitInfo(Screen):
 		self.project = 0
 		self.projects = [
 			("enigma2", "Enigma2"),
-			("openpli-oe-core", "Openpli Oe Core"),
+			('OpenTSimage', 'Depend on Openpli Oe Core'),
 			("enigma2-plugins", "Enigma2 Plugins"),
 			("aio-grab", "Aio Grab"),
 			("gst-plugin-dvbmediasink", "Gst Plugin Dvbmediasink"),
@@ -193,7 +193,7 @@ class CommitInfo(Screen):
 		self.Timer.start(50, True)
 
 	def readGithubCommitLogs(self):
-		url = 'https://api.github.com/repos/openpli/%s/commits' % self.projects[self.project][0]
+		url = 'https://api.github.com/repos/openpli2/%s/commits' % self.projects[self.project][0]
 		commitlog = ""
 		from datetime import datetime
 		from json import loads
@@ -216,7 +216,7 @@ class CommitInfo(Screen):
 			commitlog = commitlog.encode('utf-8')
 			self.cachedProjects[self.projects[self.project][1]] = commitlog
 		except:
-			commitlog += _("Currently the commit log cannot be retrieved - please try later again")
+			commitlog += _("You are using OpenTSimage To Drembox" "\n\n" "Built By RAED" "\n\n" "Supported" "\n" "rrrr53@hotmail.com" "\n\n" "Enjoy")
 		self["AboutScrollLabel"].setText(commitlog)
 
 	def updateCommitLogs(self):
