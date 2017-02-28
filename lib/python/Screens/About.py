@@ -24,9 +24,9 @@ class About(Screen):
 		self.setTitle(_("About"))
 		hddsplit = skin.parameters.get("AboutHddSplit", 0)
 
-		AboutText = _("Hardware: ") + about.getHardwareTypeString() + "\n"
+		AboutText = _("OpenTSimage") + "\n\n"
+		AboutText += _("Hardware: ") + about.getHardwareTypeString() + "\n"
 		AboutText += _("CPU: ") + about.getCPUInfoString() + "\n"
-		AboutText += _("Image: ") + about.getImageTypeString() + "\n"
 		AboutText += _("Installed: ") + about.getFlashDateString() + "\n"
 		AboutText += _("Kernel version: ") + about.getKernelVersionString() + "\n"
 
