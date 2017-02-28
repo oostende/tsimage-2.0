@@ -109,7 +109,7 @@ def InitUsageConfig():
         choicelist.append((str(i), ngettext('%d minute', '%d minutes', m) % m))
 
     config.usage.pip_last_service_timeout = ConfigSelection(default='0', choices=choicelist)
-    config.usage.default_path = ConfigText(default=resolveFilename(SCOPE_HDD))
+    config.usage.default_path = ConfigText(default = '')
     config.usage.timer_path = ConfigText(default='<default>')
     config.usage.instantrec_path = ConfigText(default='<default>')
     config.usage.timeshift_path = ConfigText(default='/media/hdd/')
@@ -752,7 +752,7 @@ def updateChoices(sel, choices):
 
 
 def preferredPath(path):
-    if config.usage.setup_level.index < 2 or path == '<default>':
+    if config.usage.setup_level.index < 2 or path == '<default>' or not path:
         return None
     elif path == '<current>':
         return config.movielist.last_videodir.value
