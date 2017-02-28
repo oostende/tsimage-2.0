@@ -53,8 +53,8 @@ class ServiceList(HTMLComponent, GUIComponent):
 		self.ServiceNameFont = parseFont("Regular;22", ((1,1),(1,1)))
 		self.ServiceInfoFont = parseFont("Regular;18", ((1,1),(1,1)))
 		self.ServiceNumberFont = parseFont("Regular;20", ((1,1),(1,1)))
-		self.progressBarWidth = 100
-		self.progressPercentWidth = 0
+		self.progressBarWidth = 60
+		self.progressPercentWidth = 85
 		self.fieldMargins = 10
 
 		self.onSelectionChanged = [ ]
