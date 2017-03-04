@@ -113,7 +113,7 @@ def dump(dir, p = ""):
 			dump(val, p + "(dict)/" + entry)
 	if hasattr(dir, "__dict__"):
 		for name, value in dir.__dict__.items():
-			if str(value) not in had:
+			if not had.has_key(str(value)):
 				had[str(value)] = 1
 				dump(value, p + "/" + str(name))
 			else:
