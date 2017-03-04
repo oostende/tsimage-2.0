@@ -1283,7 +1283,7 @@ class PluginDetails(Screen, PackageInfoHandler):
 		if self.statuspicinstance is not None:
 			self["statuspic"].instance.setPixmap(self.statuspicinstance.__deref__())
 			self["statuspic"].show()
-		if self.divpicinstance is not None
+		if self.divpicinstance is not None:
 			self["divpic"].instance.setPixmap(self.divpicinstance.__deref__())
 			self["divpic"].show()
 
