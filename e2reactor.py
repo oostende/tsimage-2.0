@@ -55,15 +55,12 @@ class PollReactor(posixbase.PosixReactorBase):
 			pass
 
 		mask = 0
-		if fd in reads:
- 			mask = mask | select.POLLIN
- 		if fd in writes:
- 			mask = mask | select.POLLOUT
+		if reads.has_key(fd): mask = mask | select.POLLIN
+		if writes.has_key(fd): mask = mask | select.POLLOUT
 		if mask != 0:
 			poller.register(fd, mask)
 		else:
-			if fd in selectables:
- 				del selectables[fd]
+			if selectables.has_key(fd): del selectables[fd]
 
 
 		poller.eApp.interruptPoll()
@@ -85,7 +82,7 @@ class PollReactor(posixbase.PosixReactorBase):
 				# Hmm, maybe not the right course of action?  This method can't
 				# fail, because it happens inside error detection...
 				return
-		if fd not in reads:
+		if mdict.has_key(fd):
 			del mdict[fd]
 			self._updateRegistration(fd)
 
@@ -102,7 +99,7 @@ class PollReactor(posixbase.PosixReactorBase):
 		"""Add a FileDescriptor for notification of data available to write.
 		"""
 		fd = writer.fileno()
-		if fd not in writes:
+		if not writes.has_key(fd):
 			selectables[fd] = writer
 			writes[fd] =  1
 			self._updateRegistration(fd)
