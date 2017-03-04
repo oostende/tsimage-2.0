@@ -4,7 +4,6 @@
 #include <libsig_comp.h>
 
 #include <lib/python/python.h>
-#include <utility>
 
 class PSignal
 {
@@ -28,12 +27,6 @@ inline PyObject *PyFrom(int v)
 inline PyObject *PyFrom(const char *c)
 {
 	return PyString_FromString(c);
-}
-
-
-inline PyObject *PyFrom(std::pair<const char*, int>& p)
-{
-	return PyString_FromStringAndSize(p.first, p.second);
 }
 
 template <class R>
