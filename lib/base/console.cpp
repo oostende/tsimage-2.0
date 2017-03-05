@@ -86,10 +86,10 @@ int eConsoleAppContainer::setCWD( const char *path )
 
 void eConsoleAppContainer::setBufferSize(int size)
 {
- 	if (size > 0)
- 		buffer.resize(size);
+	if (size > 0)
+		buffer.resize(size);
 }
- 	 
+
 int eConsoleAppContainer::execute( const char *cmd )
 {
 	int argc = 3;
@@ -241,7 +241,7 @@ void eConsoleAppContainer::readyRead(int what)
 		{
 			buf[rd]=0;
 			/*emit*/ dataAvail(std::make_pair(buf, rd));
- 			stdoutAvail(std::make_pair(buf, rd));
+			stdoutAvail(std::make_pair(buf, rd));
 			if ( filefd[1] >= 0 )
 				::write(filefd[1], buf, rd);
 			if (!hungup)
@@ -282,7 +282,7 @@ void eConsoleAppContainer::readyErrRead(int what)
 				eDebug("[eConsoleAppContainer] %d = %c (%02x)", i, buf[i], buf[i] );*/
 			buf[rd]=0;
 			/*emit*/ dataAvail(std::make_pair(buf, rd));
- 			stderrAvail(std::make_pair(buf, rd));
+			stderrAvail(std::make_pair(buf, rd));
 		}
 	}
 }
