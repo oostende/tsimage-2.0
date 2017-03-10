@@ -16,7 +16,7 @@ from enigma import eTimer, eLabel, eConsoleAppContainer
 
 from Components.HTMLComponent import HTMLComponent
 from Components.GUIComponent import GUIComponent
-import skin
+import skin, os
 
 class About(Screen):
 	def __init__(self, session):
