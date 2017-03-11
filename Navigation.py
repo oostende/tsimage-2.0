@@ -119,7 +119,7 @@ class Navigation:
 								if config.usage.frontend_priority_dvbt.value != config.usage.frontend_priority.value:
 									setPreferredTuner(int(config.usage.frontend_priority_dvbt.value))
 									setPriorityFrontend = True
-								if SystemInfo["ATSC_priority_tuner_available"] and config.usage.frontend_priority_atsc.value != "-2":
+							if SystemInfo["ATSC_priority_tuner_available"] and config.usage.frontend_priority_atsc.value != "-2":
  								if config.usage.frontend_priority_atsc.value != config.usage.frontend_priority.value:
  									setPreferredTuner(int(config.usage.frontend_priority_atsc.value))
  									setPriorityFrontend = True
@@ -128,7 +128,7 @@ class Navigation:
 								if config.usage.frontend_priority_dvbc.value != config.usage.frontend_priority.value:
 									setPreferredTuner(int(config.usage.frontend_priority_dvbc.value))
 									setPriorityFrontend = True
-								if SystemInfo["ATSC_priority_tuner_available"] and config.usage.frontend_priority_atsc.value != "-2":
+							if SystemInfo["ATSC_priority_tuner_available"] and config.usage.frontend_priority_atsc.value != "-2":
  								if config.usage.frontend_priority_atsc.value != config.usage.frontend_priority.value:
  									setPreferredTuner(int(config.usage.frontend_priority_atsc.value))
  									setPriorityFrontend = True
