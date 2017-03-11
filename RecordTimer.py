@@ -192,8 +192,8 @@ class RecordTimerEntry(timer.TimerEntry, object):
 						if config.usage.recording_frontend_priority_dvbc.value != config.usage.frontend_priority.value:
 							self.setAdvancedPriorityFrontend = config.usage.recording_frontend_priority_dvbc.value
 					if SystemInfo["ATSC_priority_tuner_available"] and config.usage.recording_frontend_priority_atsc.value != "-2":
- +						if config.usage.recording_frontend_priority_atsc.value != config.usage.frontend_priority.value:
- +							self.setAdvancedPriorityFrontend = config.usage.recording_frontend_priority_atsc.value
+ 						if config.usage.recording_frontend_priority_atsc.value != config.usage.frontend_priority.value:
+ 							self.setAdvancedPriorityFrontend = config.usage.recording_frontend_priority_atsc.value
 				else:
 					if SystemInfo["DVB-S_priority_tuner_available"] and config.usage.recording_frontend_priority_dvbs.value != "-2":
 						if config.usage.recording_frontend_priority_dvbs.value != config.usage.frontend_priority.value:
