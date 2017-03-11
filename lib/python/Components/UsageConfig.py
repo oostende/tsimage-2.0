@@ -228,9 +228,9 @@ def InitUsageConfig():
             dvbt_nims.append((str(x.slot), x.getSlotName()))
         elif x.isCompatible('DVB-C'):
             dvbc_nims.append((str(x.slot), x.getSlotName()))
-	elif x.isCompatible('ATSC'):
- 	    atsc_nims.append((str(x.slot), x.getSlotName()))
-        nims.append((str(x.slot), x.getSlotName()))
+        elif x.isCompatible('ATSC'):
+            atsc_nims.append((str(x.slot), x.getSlotName()))
+            nims.append((str(x.slot), x.getSlotName()))
 
     config.usage.frontend_priority = ConfigSelection(default='-1', choices=list(nims))
     nims.insert(0, ('-2', _('Disabled')))
@@ -245,14 +245,14 @@ def InitUsageConfig():
     dvbc_nims.insert(1, ('-1', _('auto')))
     config.usage.recording_frontend_priority_dvbc = ConfigSelection(default='-2', choices=dvbc_nims)
     config.usage.frontend_priority_atsc = ConfigSelection(default = "-2", choices = list(atsc_nims))
- 	atsc_nims.insert(1,('-1', _('auto')))
- 	config.usage.recording_frontend_priority_atsc = ConfigSelection(default = '-2', choices = atsc_nims)
+    atsc_nims.insert(1,('-1', _('auto')))
+    config.usage.recording_frontend_priority_atsc = ConfigSelection(default = '-2', choices = atsc_nims)
  
- 	SystemInfo['DVB-S_priority_tuner_available'] = len(dvbs_nims) > 3 and any(len(i) > 2 for i in (dvbt_nims, dvbc_nims, atsc_nims))
- 	SystemInfo['DVB-T_priority_tuner_available'] = len(dvbt_nims) > 3 and any(len(i) > 2 for i in (dvbs_nims, dvbc_nims, atsc_nims))
- 	SystemInfo['DVB-C_priority_tuner_available'] = len(dvbc_nims) > 3 and any(len(i) > 2 for i in (dvbs_nims, dvbt_nims, atsc_nims))
- 	SystemInfo['ATSC_priority_tuner_available'] = len(atsc_nims) > 3 and any(len(i) > 2 for i in (dvbs_nims, dvbc_nims, dvbt_nims))
-	
+    SystemInfo['DVB-S_priority_tuner_available'] = len(dvbs_nims) > 3 and any(len(i) > 2 for i in (dvbt_nims, dvbc_nims, atsc_nims))
+    SystemInfo['DVB-T_priority_tuner_available'] = len(dvbt_nims) > 3 and any(len(i) > 2 for i in (dvbs_nims, dvbc_nims, atsc_nims))
+    SystemInfo['DVB-C_priority_tuner_available'] = len(dvbc_nims) > 3 and any(len(i) > 2 for i in (dvbs_nims, dvbt_nims, atsc_nims))
+    SystemInfo['ATSC_priority_tuner_available'] = len(atsc_nims) > 3 and any(len(i) > 2 for i in (dvbs_nims, dvbc_nims, dvbt_nims))
+    
     config.misc.disable_background_scan = ConfigYesNo(default=False)
     config.usage.show_event_progress_in_servicelist = ConfigSelection(default='barright', choices=[('barleft', _('Progress bar left')),
      ('barright', _('Progress bar right')),
@@ -326,10 +326,10 @@ def InitUsageConfig():
         config.usage.standbyLED.addNotifier(standbyLEDChanged)
         
     if SystemInfo["PowerOffDisplay"]:
-		def powerOffDisplayChanged(configElement):
-			open(SystemInfo["PowerOffDisplay"], "w").write(configElement.value and "1" or "0")
-		config.usage.powerOffDisplay = ConfigYesNo(default = True)
-		config.usage.powerOffDisplay.addNotifier(powerOffDisplayChanged)        
+        def powerOffDisplayChanged(configElement):
+            open(SystemInfo["PowerOffDisplay"], "w").write(configElement.value and "1" or "0")
+        config.usage.powerOffDisplay = ConfigYesNo(default = True)
+        config.usage.powerOffDisplay.addNotifier(powerOffDisplayChanged)        
         
     if SystemInfo['WakeOnLAN']:
         def wakeOnLANChanged(configElement):
