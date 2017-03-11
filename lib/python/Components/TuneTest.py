@@ -1,4 +1,4 @@
-from enigma import eDVBFrontendParametersSatellite, eDVBFrontendParametersTerrestrial, eDVBFrontendParametersCable, eDVBFrontendParameters, eDVBResourceManager, eTimer
+from enigma import eDVBFrontendParametersSatellite, eDVBFrontendParametersTerrestrial, eDVBFrontendParametersCable, eDVBFrontendParametersATSC, eDVBFrontendParameters, eDVBResourceManager, eTimer
 
 class Tuner:
 	def __init__(self, frontend, ignore_rotor=False):
@@ -29,6 +29,23 @@ class Tuner:
 			feparm.setDVBS(transponderObj, self.ignore_rotor)
 			self.lastparm = feparm
 			self.frontend.tune(feparm)
+			
+	def tuneATSC(self, transponder):
+ 		if self.frontend:
+ 			print "[TuneTest] tuning to transponder with data", transponder
+ 			parm = eDVBFrontendParametersATSC()
+ 			parm.frequency = transponder[0]
+ 			parm.modulation = transponder[1]
+ 			parm.inversion = transponder[2]
+ 			parm.system = transponder[3]
+ 			self.tuneATSCObj(parm)
+ 
+ 	def tuneATSCObj(self, transponderObj):
+ 		if self.frontend:
+ 			feparm = eDVBFrontendParameters()
+ 			feparm.setATSC(transponderObj)
+ 			self.lastparm = feparm
+ 			self.frontend.tune(feparm)
 
 	def tuneTerr(self, frequency,
 		inversion=2, bandwidth = 7000000, fechigh = 6, feclow = 6,
