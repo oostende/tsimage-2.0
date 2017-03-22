@@ -211,7 +211,7 @@ def InitAVSwitch():
 		config.av.scaler_sharpness = NoSave(ConfigNothing())
 
 	if SystemInfo["HasMultichannelPCM"]:
-		def setMultichannelPCM(configElement):
-			open(SystemInfo["HasMultichannelPCM"], "w").write(configElement.value and "enable" or "disable")
-		config.av.multichannel_pcm = ConfigYesNo(default = False)
-		config.av.multichannel_pcm.addNotifier(setMultichannelPCM)
+ 		def setMultichannelPCM(configElement):
+ 			open(SystemInfo["HasMultichannelPCM"], "w").write(configElement.value and "enable" or "disable")
+ 		config.av.multichannel_pcm = ConfigYesNo(default = False)
+ 		config.av.multichannel_pcm.addNotifier(setMultichannelPCM)
