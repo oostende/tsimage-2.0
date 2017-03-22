@@ -61,7 +61,7 @@ class Language:
 
     def activateLanguage(self, index):
         try:
-            lang = self.lang[index]
+            lang = self.lang.get(index, "en_EN")
             print 'Activating language ' + lang[0]
             gettext._translations = {}
             self.currLangObj = gettext.translation('enigma2', resolveFilename(SCOPE_LANGUAGE, ''), languages=[lang[1]], fallback=True)
