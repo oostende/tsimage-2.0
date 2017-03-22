@@ -64,7 +64,7 @@ class Language:
             if index not in self.lang:
                      print "Selected language %s does not exist, fallback to en_EN!" % index
                      index = "en_EN"
-           lang = self.lang[index]
+            lang = self.lang[index]
             print 'Activating language ' + lang[0]
             gettext._translations = {}
             self.currLangObj = gettext.translation('enigma2', resolveFilename(SCOPE_LANGUAGE, ''), languages=[lang[1]], fallback=True)
