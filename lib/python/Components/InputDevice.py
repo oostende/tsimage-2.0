@@ -211,6 +211,12 @@ class RcTypeControl():
 		return self.boxType
 
 	def writeRcType(self, rctype):
-		open('/proc/stb/ir/rc/type', 'w').write(rctype and '%d' % rctype or '0')
+		open('/proc/stb/ir/rc/type', 'w').write('%d' % rctype)
+
+	def readRcType(self):
+		rc = 0
+		if self.isSupported:
+			rc = open('/proc/stb/ir/rc/type', 'r').read().strip()
+		return int(rc)
 
 iRcTypeControl = RcTypeControl()
