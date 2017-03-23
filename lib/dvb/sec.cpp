@@ -747,12 +747,12 @@ RESULT eDVBSatelliteEquipmentControl::prepare(iDVBFrontend &frontend, const eDVB
 
 						/* calculate "T" value */
 
-						t1 = (absdiff(frequency_mhz, lof_mhz) ub_mhz) * 10; /* multiply "T" base by ten for proper rounding to nearest integer */
+						t1 = (absdiff(frequency_mhz, lof_mhz) + ub_mhz) * 10; /* multiply "T" base by ten for proper rounding to nearest integer */
 						t2 = t1 / 4;	// divide by 4 MHz (per Unicable specification)
 						t3 = t2 / 10;	// divide by 10 to correct earlier multiplication by 10, now integer*10 truncated
 						t4 = t3 * 10;	// multiply again by 10 to get actual integer result
 						t5 = t2 - t4;	// calculate difference between result and result integer*10 truncated, the fraction
-						t6 = t3 (t5 >= 5 ? 1 : 0);	// round the result
+						t6 = t3 + (t5 >= 5 ? 1 : 0);	// round the result
 						encoded_frequency_T = t6 - 350;
 
 						diseqc.len = 5;
