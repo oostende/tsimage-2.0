@@ -823,7 +823,7 @@ RESULT eDVBSatelliteEquipmentControl::prepare(iDVBFrontend &frontend, const eDVB
 
 					default:
 					{
-						frontend.setData(eDVBFrontend::SATCR, 0);
+						frontend.setData(eDVBFrontend::SATCR, -1);
 						frontend.setData(eDVBFrontend::DICTION, SatCR_format_none);
 
 						eDebug("**** SatCR_format neither Unicable nor JESS!");
@@ -838,7 +838,7 @@ RESULT eDVBSatelliteEquipmentControl::prepare(iDVBFrontend &frontend, const eDVB
 			}
 			else
  			{
- 				frontend.setData(eDVBFrontend::SATCR, 0);
+ 				frontend.setData(eDVBFrontend::SATCR, -1);
  				frontend.setData(eDVBFrontend::DICTION, SatCR_format_none);
  			}
 
@@ -1090,9 +1090,6 @@ void eDVBSatelliteEquipmentControl::prepareTurnOffSatCR(iDVBFrontend &frontend)
 	sec_sequence.push_back( eSecCommand(eSecCommand::SET_VOLTAGE, iDVBFrontend::voltage18_5) );
 	sec_sequence.push_back( eSecCommand(eSecCommand::SET_TONE, iDVBFrontend::toneOff) );
 	sec_sequence.push_back( eSecCommand(eSecCommand::SLEEP, m_params[DELAY_AFTER_VOLTAGE_CHANGE_BEFORE_SWITCH_CMDS]) );
-
-	eDVBDiseqcCommand diseqc;
-	memset(diseqc.data, 0, MAX_DISEQC_LENGTH);
 	
 	switch((SatCR_format_t)diction)
 	{
@@ -1111,6 +1108,9 @@ void eDVBSatelliteEquipmentControl::prepareTurnOffSatCR(iDVBFrontend &frontend)
 			unsigned int mode = 0;
 			unsigned int position = 0;
 			unsigned int bank = (position << 2) | (mode << 0);
+			
+			eDVBDiseqcCommand diseqc;
+ 			memset(diseqc.data, 0, MAX_DISEQC_LENGTH);
 
 			diseqc.len = 5;
 			diseqc.data[0] = 0xe0;
@@ -1120,6 +1120,8 @@ void eDVBSatelliteEquipmentControl::prepareTurnOffSatCR(iDVBFrontend &frontend)
 			diseqc.data[4] = (unsigned char)(encoded_frequency_T & 0xff);
 
 			eDebug("**** shutdown unicable ub %u", ub);
+			
+			sec_sequence.push_back( eSecCommand(eSecCommand::SEND_DISEQC, diseqc) );
 
 			break;
 		}
@@ -1137,6 +1139,9 @@ void eDVBSatelliteEquipmentControl::prepareTurnOffSatCR(iDVBFrontend &frontend)
 			unsigned int encoded_frequency_T = 0;
 			unsigned int mode = 0;
 			unsigned int position = 0;
+			
+			eDVBDiseqcCommand diseqc;
+ 			memset(diseqc.data, 0, MAX_DISEQC_LENGTH);
 
 			diseqc.len = 4;
 			diseqc.data[0] = 0x70;
@@ -1145,17 +1150,18 @@ void eDVBSatelliteEquipmentControl::prepareTurnOffSatCR(iDVBFrontend &frontend)
 			diseqc.data[3] = (unsigned char)((position << 2) | mode);
 
 			eDebug("**** shutdown JESS ub %d", ub);
+			
+			sec_sequence.push_back( eSecCommand(eSecCommand::SEND_DISEQC, diseqc) );
 
 			break;
 		}
 
 		default:
 		{
-			eDebug("**** shutdown unknown unicable type ub %d!", (int)userband);
+			eDebug("**** ignore shutdown unknown unicable type %u ub %u", (int)diction, (int)userband);
 		}
 	}
 
-	sec_sequence.push_back( eSecCommand(eSecCommand::SEND_DISEQC, diseqc) );
 	sec_sequence.push_back( eSecCommand(eSecCommand::SLEEP, m_params[DELAY_AFTER_LAST_DISEQC_CMD]) );
 	sec_sequence.push_back( eSecCommand(eSecCommand::SET_VOLTAGE, iDVBFrontend::voltage13) );
 	sec_sequence.push_back( eSecCommand(eSecCommand::DELAYED_CLOSE_FRONTEND) );
