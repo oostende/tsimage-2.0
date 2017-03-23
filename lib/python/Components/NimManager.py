@@ -17,7 +17,6 @@ from enigma import eDVBSatelliteEquipmentControl as secClass, \
 from time import localtime, mktime
 from datetime import datetime
 
-from Tools import Directories
 import xml.etree.cElementTree
 
 config.unicable = ConfigSubsection()
@@ -50,7 +49,7 @@ class SecConfigure:
 		if self.linked.has_key(slotid):
 			for slot in self.linked[slotid]:
 				tunermask |= (1 << slot)
-		sec.setLNBSatCR(-1)
+		sec.setLNBSatCRformat(0)
 		sec.setLNBNum(1)
 		sec.setLNBLOFL(CircularLNB and 10750000 or 9750000)
 		sec.setLNBLOFH(CircularLNB and 10750000 or 10600000)
@@ -58,7 +57,7 @@ class SecConfigure:
 		sec.setLNBIncreasedVoltage(False)
 		sec.setRepeats(0)
 		sec.setFastDiSEqC(fastDiSEqC)
-		sec.setSeqRepeat(True)
+		sec.setSeqRepeat(False)
 		sec.setCommandOrder(0)
 
 		#user values
@@ -122,7 +121,7 @@ class SecConfigure:
 
 	def getRoot(self, slotid, connto):
 		visited = []
-		while (self.NimManager.getNimConfig(connto).configMode.value in ("satposdepends", "equal", "loopthrough")):
+		while self.NimManager.getNimConfig(connto).configMode.value in ("satposdepends", "equal", "loopthrough"):
 			connto = int(self.NimManager.getNimConfig(connto).connectedTo.value)
 			if connto in visited: # prevent endless loop
 				return slotid
@@ -256,7 +255,7 @@ class SecConfigure:
 	def updateAdvanced(self, sec, slotid):
 		try:
 			if config.Nims[slotid].advanced.unicableconnected is not None:
-				if config.Nims[slotid].advanced.unicableconnected.value == True:
+				if config.Nims[slotid].advanced.unicableconnected.value:
 					config.Nims[slotid].advanced.unicableconnectedTo.save_forced = True
 					self.linkNIMs(sec, slotid, int(config.Nims[slotid].advanced.unicableconnectedTo.value))
 					connto = self.getRoot(slotid, int(config.Nims[slotid].advanced.unicableconnectedTo.value))
@@ -927,7 +926,7 @@ class NimManager:
 	# returns True if something is configured to be connected to this nim
 	# if slotid == -1, returns if something is connected to ANY nim
 	def somethingConnected(self, slotid = -1):
-		if (slotid == -1):
+		if slotid == -1:
 			connected = False
 			for id in range(self.getSlotCount()):
 				if self.somethingConnected(id):
@@ -1041,77 +1040,43 @@ class NimManager:
 
 def InitSecParams():
 	config.sec = ConfigSubsection()
+	config.sec.delay_after_continuous_tone_disable_before_diseqc = ConfigInteger(default=25, limits = (0, 9999))
+	config.sec.delay_after_final_continuous_tone_change = ConfigInteger(default=10, limits = (0, 9999))
+	config.sec.delay_after_final_voltage_change = ConfigInteger(default=10, limits = (0, 9999))
+	config.sec.delay_between_diseqc_repeats = ConfigInteger(default=120, limits = (0, 9999))
+	config.sec.delay_after_last_diseqc_command = ConfigInteger(default=100, limits = (0, 9999))
+	config.sec.delay_after_toneburst = ConfigInteger(default=50, limits = (0, 9999))
+	config.sec.delay_after_change_voltage_before_switch_command = ConfigInteger(default=75, limits = (0, 9999))
+	config.sec.delay_after_enable_voltage_before_switch_command = ConfigInteger(default=200, limits = (0, 9999))
+	config.sec.delay_between_switch_and_motor_command = ConfigInteger(default=700, limits = (0, 9999))
+	config.sec.delay_after_voltage_change_before_measure_idle_inputpower = ConfigInteger(default=500, limits = (0, 9999))
+	config.sec.delay_after_enable_voltage_before_motor_command = ConfigInteger(default=900, limits = (0, 9999))
+	config.sec.delay_after_motor_stop_command = ConfigInteger(default=500, limits = (0, 9999))
+	config.sec.delay_after_voltage_change_before_motor_command = ConfigInteger(default=500, limits = (0, 9999))
+	config.sec.delay_before_sequence_repeat = ConfigInteger(default=70, limits = (0, 9999))
+	config.sec.motor_running_timeout = ConfigInteger(default=360, limits = (0, 9999))
+	config.sec.motor_command_retries = ConfigInteger(default=1, limits = (0, 5))
+	config.sec.delay_after_diseqc_reset_cmd = ConfigInteger(default=50, limits = (0, 9999))
+	config.sec.delay_after_diseqc_peripherial_poweron_cmd = ConfigInteger(default=150, limits = (0, 9999))
 
-	x = ConfigInteger(default=25, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_CONT_TONE_DISABLE_BEFORE_DISEQC, configElement.value))
-	config.sec.delay_after_continuous_tone_disable_before_diseqc = x
-
-	x = ConfigInteger(default=10, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_FINAL_CONT_TONE_CHANGE, configElement.value))
-	config.sec.delay_after_final_continuous_tone_change = x
-
-	x = ConfigInteger(default=10, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_FINAL_VOLTAGE_CHANGE, configElement.value))
-	config.sec.delay_after_final_voltage_change = x
-
-	x = ConfigInteger(default=60, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_BETWEEN_DISEQC_REPEATS, configElement.value))
-	config.sec.delay_between_diseqc_repeats = x
-
-	x = ConfigInteger(default=50, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_LAST_DISEQC_CMD, configElement.value))
-	config.sec.delay_after_last_diseqc_command = x
-
-	x = ConfigInteger(default=50, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_TONEBURST, configElement.value))
-	config.sec.delay_after_toneburst = x
-
-	x = ConfigInteger(default=20, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_VOLTAGE_CHANGE_BEFORE_SWITCH_CMDS, configElement.value))
-	config.sec.delay_after_change_voltage_before_switch_command = x
-
-	x = ConfigInteger(default=200, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_ENABLE_VOLTAGE_BEFORE_SWITCH_CMDS, configElement.value))
-	config.sec.delay_after_enable_voltage_before_switch_command = x
-
-	x = ConfigInteger(default=700, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_BETWEEN_SWITCH_AND_MOTOR_CMD, configElement.value))
-	config.sec.delay_between_switch_and_motor_command = x
-
-	x = ConfigInteger(default=500, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_VOLTAGE_CHANGE_BEFORE_MEASURE_IDLE_INPUTPOWER, configElement.value))
-	config.sec.delay_after_voltage_change_before_measure_idle_inputpower = x
-
-	x = ConfigInteger(default=900, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_ENABLE_VOLTAGE_BEFORE_MOTOR_CMD, configElement.value))
-	config.sec.delay_after_enable_voltage_before_motor_command = x
-
-	x = ConfigInteger(default=500, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_MOTOR_STOP_CMD, configElement.value))
-	config.sec.delay_after_motor_stop_command = x
-
-	x = ConfigInteger(default=500, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_VOLTAGE_CHANGE_BEFORE_MOTOR_CMD, configElement.value))
-	config.sec.delay_after_voltage_change_before_motor_command = x
-
-	x = ConfigInteger(default=70, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_BEFORE_SEQUENCE_REPEAT, configElement.value))
-	config.sec.delay_before_sequence_repeat = x
-
-	x = ConfigInteger(default=360, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.MOTOR_RUNNING_TIMEOUT, configElement.value))
-	config.sec.motor_running_timeout = x
-
-	x = ConfigInteger(default=1, limits = (0, 5))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.MOTOR_COMMAND_RETRIES, configElement.value))
-	config.sec.motor_command_retries = x
-
-	x = ConfigInteger(default=50, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_DISEQC_RESET_CMD, configElement.value))
-	config.sec.delay_after_diseqc_reset_cmd = x
-
-	x = ConfigInteger(default=150, limits = (0, 9999))
-	x.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_DISEQC_PERIPHERIAL_POWERON_CMD, configElement.value))
+	config.sec.delay_before_sequence_repeat.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_BEFORE_SEQUENCE_REPEAT, configElement.value))
+	config.sec.motor_running_timeout.addNotifier(lambda configElement: secClass.setParam(secClass.MOTOR_RUNNING_TIMEOUT, configElement.value))
+	config.sec.motor_command_retries.addNotifier(lambda configElement: secClass.setParam(secClass.MOTOR_COMMAND_RETRIES, configElement.value))
+	config.sec.delay_after_diseqc_reset_cmd.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_DISEQC_RESET_CMD, configElement.value))
+	config.sec.delay_after_diseqc_peripherial_poweron_cmd.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_DISEQC_PERIPHERIAL_POWERON_CMD, configElement.value))
+	config.sec.delay_after_voltage_change_before_motor_command.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_VOLTAGE_CHANGE_BEFORE_MOTOR_CMD, configElement.value))
+	config.sec.delay_after_motor_stop_command.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_MOTOR_STOP_CMD, configElement.value))
+	config.sec.delay_after_enable_voltage_before_motor_command.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_ENABLE_VOLTAGE_BEFORE_MOTOR_CMD, configElement.value))
+	config.sec.delay_after_voltage_change_before_measure_idle_inputpower.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_VOLTAGE_CHANGE_BEFORE_MEASURE_IDLE_INPUTPOWER, configElement.value))
+	config.sec.delay_between_switch_and_motor_command.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_BETWEEN_SWITCH_AND_MOTOR_CMD, configElement.value))
+	config.sec.delay_after_enable_voltage_before_switch_command.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_ENABLE_VOLTAGE_BEFORE_SWITCH_CMDS, configElement.value))
+	config.sec.delay_after_change_voltage_before_switch_command.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_VOLTAGE_CHANGE_BEFORE_SWITCH_CMDS, configElement.value))
+	config.sec.delay_after_toneburst.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_TONEBURST, configElement.value))
+	config.sec.delay_after_last_diseqc_command.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_LAST_DISEQC_CMD, configElement.value))
+	config.sec.delay_between_diseqc_repeats.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_BETWEEN_DISEQC_REPEATS, configElement.value))
+	config.sec.delay_after_final_voltage_change.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_FINAL_VOLTAGE_CHANGE, configElement.value))
+	config.sec.delay_after_final_continuous_tone_change.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_FINAL_CONT_TONE_CHANGE, configElement.value))
+	config.sec.delay_after_continuous_tone_disable_before_diseqc.addNotifier(lambda configElement: secClass.setParam(secClass.DELAY_AFTER_CONT_TONE_DISABLE_BEFORE_DISEQC, configElement.value))
 	config.sec.delay_after_diseqc_peripherial_poweron_cmd = x
 
 # TODO add support for satpos depending nims to advanced nim configuration
@@ -1136,7 +1101,7 @@ def InitNimManager(nimmgr, update_slots = []):
 
 	lnb_choices = {
 		"universal_lnb": _("Universal LNB"),
-		"unicable": _("Unicable"),
+		"unicable": _("SCR (Unicable/JESS)"),
 		"c_band": _("C-Band"),
 		"circular_lnb": _("Circular LNB"),
 		"user_defined": _("User defined")}
@@ -1188,8 +1153,8 @@ def InitNimManager(nimmgr, update_slots = []):
 		("cut", "DiSEqC 1.0, DiSEqC 1.1, toneburst"), ("tcu", "toneburst, DiSEqC 1.0, DiSEqC 1.1"),
 		("uct", "DiSEqC 1.1, DiSEqC 1.0, toneburst"), ("tuc", "toneburst, DiSEqC 1.1, DiSEqC 1.0")]
 	advanced_lnb_diseqc_repeat_choices = [("none", _("None")), ("one", _("One")), ("two", _("Two")), ("three", _("Three"))]
-	advanced_lnb_fast_turning_btime = mktime(datetime(1970, 1, 1, 7, 0).timetuple());
-	advanced_lnb_fast_turning_etime = mktime(datetime(1970, 1, 1, 19, 0).timetuple());
+	advanced_lnb_fast_turning_btime = mktime(datetime(1970, 1, 1, 7, 0).timetuple())
+ 	advanced_lnb_fast_turning_etime = mktime(datetime(1970, 1, 1, 19, 0).timetuple())
 
 	def configLOFChanged(configElement):
 		if configElement.value == "unicable":
@@ -1199,10 +1164,12 @@ def InitNimManager(nimmgr, update_slots = []):
 			lnbs = nim.advanced.lnb
 			section = lnbs[lnb]
 			if isinstance(section.unicable, ConfigNothing):
-				idef positionsChanged(configEntry):
+				def getformat(value, index):
+ 					return index >= 4 and "jess" or "unicable" if value == "dSRC" else value
+				def positionsChanged(configEntry):
 					section.positionNumber = ConfigSelection(["%d" % (x+1) for x in range(configEntry.value)], default="%d" % min(lnb, configEntry.value))
 				def scrListChanged(productparameters, srcfrequencylist, configEntry):
-					section.format = ConfigSelection([("unicable", _("Unicable")), ("jess", _("JESS"))], default=productparameters.get("format", "unicable"))
+					section.format = ConfigSelection(["unicable", "jess"], default=getformat(productparameters.get("format", "unicable"), configEntry.index))
 					section.scrfrequency = ConfigInteger(default=int(srcfrequencylist[configEntry.index]))
 					section.positions = ConfigInteger(default=int(productparameters.get("positions", 1)))
 					section.positions.addNotifier(positionsChanged)
@@ -1262,11 +1229,11 @@ def InitNimManager(nimmgr, update_slots = []):
 						config.unicable.unicableManufacturer.save_forced = True
 						section.unicableManufacturer.addNotifier(boundFunction(unicableManufacturerChanged, "lnb"))
 					else:
-						section.format = ConfigSelection([("unicable", _("Unicable")), ("jess", _("JESS"))])
+						section.format = ConfigSelection([("unicable", _("SCR Unicable")), ("jess", _("SCR JESS"))])
 						section.format.addNotifier(formatChanged)
 
 				unicable_xml = xml.etree.cElementTree.parse(eEnv.resolve("${datadir}/enigma2/unicable.xml")).getroot()
-				unicableList = [("unicable_lnb", _("Unicable LNB")), ("unicable_matrix", _("Unicable switch")), ("unicable_user", "Unicable "+_("User defined"))]
+				unicableList = [("unicable_lnb", _("SCR (Unicable/JESS)") + " " + _("LNB")), ("unicable_matrix", _("SCR (Unicable/JESS)") + " " + _("Switch")), ("unicable_user", _("SCR (Unicable/JESS)") + " " + _("User defined"))]
 				if not config.unicable.content.items.get("unicable", False):
 					config.unicable.unicable = ConfigSelection(unicableList)
 				section.unicable = ConfigSelection(unicableList, default=config.unicable.unicable.value)
@@ -1416,9 +1383,9 @@ def InitNimManager(nimmgr, update_slots = []):
 			nim.powerMeasurement = ConfigYesNo(True)
 			nim.powerThreshold = ConfigInteger(default=hw.get_device_name() == "dm8000" and 15 or 50, limits=(0, 100))
 			nim.turningSpeed = ConfigSelection(turning_speed_choices, "fast")
-			btime = datetime(1970, 1, 1, 7, 0);
+			btime = datetime(1970, 1, 1, 7, 0)
 			nim.fastTurningBegin = ConfigDateTime(default = mktime(btime.timetuple()), formatstring = _("%H:%M"), increment = 900)
-			etime = datetime(1970, 1, 1, 19, 0);
+			etime = datetime(1970, 1, 1, 19, 0)
 			nim.fastTurningEnd = ConfigDateTime(default = mktime(etime.timetuple()), formatstring = _("%H:%M"), increment = 900)
 
 	def createCableConfig(nim, x):
@@ -1587,7 +1554,7 @@ def InitNimManager(nimmgr, update_slots = []):
  			createATSCConfig(nim, x)
 		else:
 			empty_slots += 1
-			nim.configMode = ConfigSelection(choices = { "nothing": _("disabled") }, default="nothing");
+			nim.configMode = ConfigSelection(choices = { "nothing": _("disabled") }, default="nothing")
 			if slot.type is not None:
 				print "[InitNimManager] pls add support for this frontend type!", slot.type
 
