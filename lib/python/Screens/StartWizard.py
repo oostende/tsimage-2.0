@@ -11,6 +11,7 @@ except:
 from Components.Pixmap import Pixmap, MovingPixmap, MultiPixmap
 from Components.config import config, ConfigBoolean, configfile, ConfigSubsection
 from LanguageSelection import LanguageWizard
+import os
 
 config.misc.firstrun = ConfigBoolean(default = True)
 config.misc.languageselected = ConfigBoolean(default = True)
@@ -44,6 +45,9 @@ def checkForAvailableAutoBackup():
 
 class AutoRestoreWizard(MessageBox):
 	def __init__(self, session):
+		if not os.path.isfile("/etc/installed"):
+ 			from Components.Console import Console
+ 			Console().ePopen("opkg list_installed | cut -d ' ' -f 1 > /etc/installed;chmod 444 /etc/installed")
 		MessageBox.__init__(self, session, _("Do you want to autorestore settings?"), type=MessageBox.TYPE_YESNO, timeout=10, default=True, simple=True)
 
 	def close(self, value):
@@ -52,7 +56,7 @@ class AutoRestoreWizard(MessageBox):
 		else:
 			MessageBox.close(self)
 
-wizardManager.registerWizard(AutoRestoreWizard, config.misc.firstrun.value and checkForAvailableAutoBackup(), priority = -10)
+wizardManager.registerWizard(AutoRestoreWizard, config.misc.languageselected.value and config.misc.firstrun.value and checkForAvailableAutoBackup(), priority = -10)
 wizardManager.registerWizard(LanguageWizard, config.misc.languageselected.value, priority = 5)
 if OverscanWizard:
 	wizardManager.registerWizard(OverscanWizard, config.misc.do_overscanwizard.value, priority = 10)
