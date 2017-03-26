@@ -26,8 +26,8 @@ class About(Screen):
         f = open('/etc/TSrev', 'r')
         TSRev = f.readline().strip()
         f.close()
-        AboutText = _('OpenTSimage By RAED') + '\n'
-        AboutText += _('Version: ') + TSRev + '\n\n'
+        AboutText = _('OpenTSimage ') + TSRev + '\n'
+        AboutText += _('Support: RAED rrrr53@hotmail.com') + '\n\n'
 
         AboutText += _('Hardware: ') + about.getHardwareTypeString() + '\n'
         AboutText += _('CPU: ') + about.getCPUInfoString() + '\n'
