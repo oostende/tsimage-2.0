@@ -1,5 +1,5 @@
 from Components.Harddisk import harddiskmanager
-from config import ConfigSubsection, ConfigYesNo, config, ConfigSelection, ConfigText, ConfigNumber, ConfigSet, ConfigLocations, ConfigSelectionNumber, ConfigClock, ConfigSlider, ConfigEnableDisable, ConfigSubDict, ConfigNothing, ConfigDictionarySet
+from config import ConfigSubsection, ConfigYesNo, config, ConfigSelection, ConfigText, ConfigNumber, ConfigSet, ConfigLocations, ConfigSelectionNumber, ConfigClock, ConfigSlider, ConfigEnableDisable, ConfigSubDict, ConfigNothing, ConfigInteger, ConfigPassword, ConfigIP, ConfigDictionarySet
 from Tools.Directories import resolveFilename, SCOPE_HDD, defaultRecordingLocation
 from enigma import setTunerTypePriorityOrder, setPreferredTuner, setSpinnerOnOff, setEnableTtCachingOnOff, eEnv, eDVBDB, Misc_Options, eBackgroundFileEraser, eServiceEvent
 from Components.NimManager import nimmanager
@@ -114,6 +114,18 @@ def InitUsageConfig():
     config.usage.instantrec_path = ConfigText(default='<default>')
     config.usage.timeshift_path = ConfigText(default='/media/hdd/')
     config.usage.allowed_timeshift_paths = ConfigLocations(default=['/media/hdd/'])
+    config.ncaminfo = ConfigSubsection()
+    config.ncaminfo.showInExtensions = ConfigYesNo(default=False)
+    config.ncaminfo.userdatafromconf = ConfigYesNo(default=False)
+    config.ncaminfo.autoupdate = ConfigYesNo(default=False)
+    config.ncaminfo.username = ConfigText(default='username', fixed_size=False, visible_width=12)
+    config.ncaminfo.password = ConfigPassword(default='password', fixed_size=False)
+    config.ncaminfo.ip = ConfigIP(default=[127,
+     0,
+     0,
+     1], auto_jump=True)
+    config.ncaminfo.port = ConfigInteger(default=8181, limits=(0, 65536))
+    config.ncaminfo.intervall = ConfigSelectionNumber(min=1, max=600, stepwidth=1, default=10, wraparound=True)
     config.usage.movielist_trashcan = ConfigYesNo(default=True)
     config.usage.movielist_trashcan_days = ConfigNumber(default=8)
     config.usage.movielist_trashcan_reserve = ConfigNumber(default=40)
