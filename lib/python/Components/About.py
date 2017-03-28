@@ -67,13 +67,20 @@ def getCPUInfoString():
 			try:
 				cpu_speed = int(open("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq").read()) / 1000
 			except:
-				cpu_speed = "-"
+				try:
+ 					import binascii
+ 					cpu_speed = int(int(binascii.hexlify(open('/sys/firmware/devicetree/base/cpus/cpu@0/clock-frequency', 'rb').read()), 16) / 100000000) * 100
+ 				except:
+ 					cpu_speed = "-"
 		if os.path.isfile('/proc/stb/fp/temp_sensor_avs'):
 			temperature = open("/proc/stb/fp/temp_sensor_avs").readline().replace('\n','')
 		if os.path.isfile("/sys/devices/virtual/thermal/thermal_zone0/temp"):
- 			temperature = int(open("/sys/devices/virtual/thermal/thermal_zone0/temp").read().strip())/1000
- 		if temperature:
-			return "%s %s MHz (%s) %s°C" % (processor, cpu_speed, ngettext("%d core", "%d cores", cpu_count) % cpu_count, temperature)
+ 			try:
+ 				temperature = int(open("/sys/devices/virtual/thermal/thermal_zone0/temp").read().strip())/1000
+ 			except:
+ 				pass
+		if temperature:
+ 			return "%s %s MHz (%s) %s°C" % (processor, cpu_speed, ngettext("%d core", "%d cores", cpu_count) % cpu_count, temperature)
 		return "%s %s MHz (%s)" % (processor, cpu_speed, ngettext("%d core", "%d cores", cpu_count) % cpu_count)
 	except:
 		return _("undefined")
@@ -81,8 +88,12 @@ def getCPUInfoString():
 def getDriverInstalledDate():
 	try:
 		from glob import glob
-		driver = [x.split("-")[-2:-1][0][-8:] for x in open(glob("/var/lib/opkg/info/*-dvb-modules-*.control")[0], "r") if x.startswith("Version:")][0]
-		return  "%s-%s-%s" % (driver[:4], driver[4:6], driver[6:])
+		try:
+ 			driver = [x.split("-")[-2:-1][0][-8:] for x in open(glob("/var/lib/opkg/info/*-dvb-modules-*.control")[0], "r") if x.startswith("Version:")][0]
+ 			return  "%s-%s-%s" % (driver[:4], driver[4:6], driver[6:])
+ 		except:
+ 			driver = [x.split("Version:") for x in open(glob("/var/lib/opkg/info/*-dvb-proxy-*.control")[0], "r") if x.startswith("Version:")][0]
+ 			return  "%s" % driver[1].replace("\n","")
 	except:
 		return _("unknown")
 
