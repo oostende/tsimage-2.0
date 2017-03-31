@@ -21,12 +21,18 @@ class About(Screen):
         Screen.__init__(self, session)
         self.setTitle(_('About'))
         hddsplit = skin.parameters.get('AboutHddSplit', 0)
+        
+        TSVer = 'OpenTSimage'
+        f = open('/etc/imageversion', 'r')
+        TSVer = f.readline().strip()
+        f.close()
 
         TSRev = ''
-        f = open('/etc/TSrev', 'r')
+        f = open('/etc/TSRev', 'r')
         TSRev = f.readline().strip()
         f.close()
-        AboutText = _('OpenTSimage ') + TSRev + '\n'
+        
+        AboutText = _('OpenTSimage ') + TSVer + '\n'
         AboutText += _('Support: RAED rrrr53@hotmail.com') + '\n\n'
 
         AboutText += _('Hardware: ') + about.getHardwareTypeString() + '\n'
@@ -41,9 +47,10 @@ class About(Screen):
         GStreamerVersion = 'GStreamer: ' + about.getGStreamerVersionString().replace('GStreamer', '')
         self['GStreamerVersion'] = StaticText(GStreamerVersion)
         AboutText += GStreamerVersion + '\n'
-        ImageVersion = _('Last upgrade: ') + about.getImageVersionString()
-        self['ImageVersion'] = StaticText(ImageVersion)
-        AboutText += ImageVersion + '\n'
+        #ImageVersion = _('Last upgrade: ') + about.getImageVersionString()
+        #self['ImageVersion'] = StaticText(ImageVersion)
+        #AboutText += ImageVersion + '\n'
+        self["ImageVersion"] = StaticText('Firmware: ' + TSVer + ' ' + TSRev)
 
         AboutText += _('DVB drivers: ') + about.getDriverInstalledDate() + '\n'
         AboutText += _('Python version: ') + about.getPythonVersionString() + '\n'
