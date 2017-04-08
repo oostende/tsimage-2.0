@@ -829,7 +829,11 @@ class InfoBarChannelSelection():
 class InfoBarMenu():
 
     def __init__(self):
-        self['MenuActions'] = HelpableActionMap(self, 'InfobarMenuActions', {'mainMenu': (self.mainMenu, _('Enter main menu...'))})
+        self["MenuActions"] = HelpableActionMap(self, "InfobarMenuActions",
+  			{
+  				"mainMenu": (self.mainMenu, _("Enter main menu...")),
+				"toggleAspectRatio": (self.toggleAspectRatio, _("Toggle aspect ratio...")),
+  			})
         self.session.infobar = None
 
     def mainMenu(self):
@@ -841,6 +845,16 @@ class InfoBarMenu():
     def mainMenuClosed(self, *val):
         self.session.infobar = None
 
+    def toggleAspectRatio(self):
+ 		ASPECT = [ "auto", "16:9", "4:3" ]
+ 		ASPECT_MSG = { "auto":"Auto", "16:9":"16:9", "4:3":"4:3" }
+ 		if config.av.aspect.value in ASPECT:
+ 			index = ASPECT.index(config.av.aspect.value)
+ 			config.av.aspect.value = ASPECT[(index+1)%3]
+ 		else:
+ 			config.av.aspect.value = "auto"
+ 		config.av.aspect.save()
+ 		self.session.open(MessageBox, _("AV aspect is %s." % ASPECT_MSG[config.av.aspect.value]), MessageBox.TYPE_INFO, timeout=5)
 
 class InfoBarSimpleEventView():
 
